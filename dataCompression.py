@@ -90,7 +90,7 @@ def write_file(filename: str, content: str):
 
 
 def main():
-    text = "AAAABBBCCDAA"
+    text = read_file("sample_text.txt")
     # Run-Length Encoding/Decoding Example
     print("\nRun-Length Encoding/Decoding Example")
     compressed_text = rle_compress(text)
@@ -110,7 +110,6 @@ def main():
 
     # Run-Length & Huffman combined
     print("\n\nHuffman Encoding/Decoding Example")
-    #text = "AAABBBCCDDDEEEE"
     rle_compressed_text = rle_compress(text)
     tree_root, codes = huffman_setup(rle_compressed_text)
     huffman_compressed_text = huffman_compress(rle_compressed_text, codes)
