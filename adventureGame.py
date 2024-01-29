@@ -67,6 +67,8 @@ class Game:
 
     def use(self, item):
         if item in self.player.inventory:
+            if item == "map":
+                print("fc-ce-tr\n|\nfe")
             print(f"You use {item}.")
             # Implement logic for using items if needed
         else:
