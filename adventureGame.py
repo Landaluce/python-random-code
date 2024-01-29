@@ -77,21 +77,29 @@ class Game:
 
 
 # Define predefined rooms
+forest_entrance = Room("Forest Entrance", "You find yourself at the entrance of a mysterious forest.",
+                       items=["map"],
+                       exits={"north": "Forest Clearing"})
+
 forest_clearing = Room("Forest Clearing", "A peaceful clearing in the middle of the forest.",
-                       items=["Sword"], exits={"south": "Forest Entrance"})
+                       items=["Sword"],
+                       exits={"south": "Forest Entrance", "east": "Cave Entrance"})
+
 cave_entrance = Room("Cave Entrance", "A dark cave entrance with a mysterious aura.",
-                     items=["Torch"], exits={"north": "Forest Entrance", "east": "Treasure Room"})
+                     items=["Torch"],
+                     exits={"west": "Forest Clearing", "east": "Treasure Room"})
+
 treasure_room = Room("Treasure Room", "A room filled with glittering treasures.",
-                     items=["Treasure"], exits={"west": "Cave Entrance"})
+                     items=["Treasure"],
+                     exits={"west": "Cave Entrance"})
 
 # Connect the predefined rooms
 predefined_rooms = {
-    "Forest Entrance": forest_clearing,
-    "Forest Clearing": cave_entrance,
+    "Forest Entrance": forest_entrance,
+    "Forest Clearing": forest_clearing,
     "Cave Entrance": cave_entrance,
     "Treasure Room": treasure_room
 }
-
 
 
 def main():
@@ -101,8 +109,7 @@ def main():
     print("Commands: move [direction], take [item], use [item], exit\n")
 
     player = Player("Adventurer", health=100, inventory=[])
-    start_room = Room("Forest Entrance", "You find yourself at the entrance of a mysterious forest.",
-                      items=["map"], exits={"north": "Forest Clearing"})
+    start_room = forest_entrance
     game = Game(player, start_room)
 
     # Play the game
