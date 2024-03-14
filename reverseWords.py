@@ -5,8 +5,7 @@ from typing import List
 
 def reverse_words(input: str):
     words: List[str] = input.split()
-    for i in range(0, len(words)):
-        words[i] = words[i][::-1]
+    words = [words[i][::-1] for i in range(0, len(words))]
     print(" ".join(words))
 
 
