@@ -70,7 +70,6 @@ class Game:
             if item == "map":
                 print("fc-ce-tr\n|\nfe")
             print(f"You use {item}.")
-            # Implement logic for using items if needed
         else:
             print(f"You don't have {item} in your inventory.")
 
