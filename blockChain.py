@@ -1,24 +1,28 @@
 import hashlib
 import json
 from time import time
+from typing import List, Dict, Any
 
 
 class Blockchain:
     def __init__(self):
-        self.chain = []
-        self.current_transactions = []
+        self.chain: List[Dict[str, Any]] = []
+        self.current_transactions: List[Dict[str, Any]] = []
 
         # Create the genesis block
         self.new_block(previous_hash='1', proof=100)
 
-    def new_block(self, proof, previous_hash=None):
+    def new_block(self, proof: int, previous_hash: str = None) -> Dict[str, Any]:
         """
-        Create a new Block in the Blockchain
-        :param proof: <int> The proof given by the Proof of Work algorithm
-        :param previous_hash: (Optional) <str> Hash of previous Block
-        :return: <dict> New Block
-        """
+        Create a new Block in the Blockchain.
 
+        Args:
+            proof (int): The proof given by the Proof of Work algorithm.
+            previous_hash (str): Hash of the previous Block.
+
+        Returns:
+            dict: New Block.
+        """
         block = {
             'index': len(self.chain) + 1,
             'timestamp': time(),
@@ -33,13 +37,17 @@ class Blockchain:
         self.chain.append(block)
         return block
 
-    def new_transaction(self, sender, recipient, amount):
+    def new_transaction(self, sender: str, recipient: str, amount: int) -> int:
         """
-        Creates a new transaction to go into the next mined Block
-        :param sender: <str> Address of the Sender
-        :param recipient: <str> Address of the Recipient
-        :param amount: <int> Amount
-        :return: <int> The index of the Block that will hold this transaction
+        Create a new transaction to go into the next mined Block.
+
+        Args:
+            sender (str): Address of the Sender.
+            recipient (str): Address of the Recipient.
+            amount (int): Amount.
+
+        Returns:
+            int: The index of the Block that will hold this transaction.
         """
         self.current_transactions.append({
             'sender': sender,
@@ -50,28 +58,34 @@ class Blockchain:
         return self.last_block['index'] + 1
 
     @staticmethod
-    def hash(block):
+    def hash(block: Dict[str, Any]) -> str:
         """
-        Creates a SHA-256 hash of a Block
-        :param block: <dict> Block
-        :return: <str>
-        """
+        Create a SHA-256 hash of a Block.
 
-        # We must make sure that the Dictionary is Ordered, or we'll have inconsistent hashes
+        Args:
+            block (dict): Block.
+
+        Returns:
+            str: Hash string.
+        """
         block_string = json.dumps(block, sort_keys=True).encode()
         return hashlib.sha256(block_string).hexdigest()
 
     @property
-    def last_block(self):
+    def last_block(self) -> Dict[str, Any]:
         return self.chain[-1]
 
-    def proof_of_work(self, last_proof):
+    def proof_of_work(self, last_proof: int) -> int:
         """
         Simple Proof of Work Algorithm:
-         - Find a number p' such that hash(pp') contains leading 4 zeroes, where p is the previous p'
-         - p is the previous proof, and p' is the new proof
-        :param last_proof: <int>
-        :return: <int>
+        - Find a number p' such that hash(pp') contains leading 4 zeroes, where p is the previous p'.
+        - p is the previous proof, and p' is the new proof.
+
+        Args:
+            last_proof (int): Previous Proof.
+
+        Returns:
+            int: New Proof.
         """
         proof = 0
         while self.valid_proof(last_proof, proof) is False:
@@ -79,27 +93,36 @@ class Blockchain:
         return proof
 
     @staticmethod
-    def valid_proof(last_proof, proof):
+    def valid_proof(last_proof: int, proof: int) -> bool:
         """
         Validates the Proof: Does hash(last_proof, proof) contain 4 leading zeroes?
-        :param last_proof: <int> Previous Proof
-        :param proof: <int> Current Proof
-        :return: <bool> True if correct, False if not.
+
+        Args:
+            last_proof (int): Previous Proof.
+            proof (int): Current Proof.
+
+        Returns:
+            bool: True if correct, False if not.
         """
         guess = f'{last_proof}{proof}'.encode()
         guess_hash = hashlib.sha256(guess).hexdigest()
         return guess_hash[:4] == "0000"
 
 
-# Example usage:
-blockchain = Blockchain()
-blockchain.new_transaction('Alice', 'Bob', 1)
-blockchain.new_transaction('Bob', 'Charlie', 2)
+def main():
+    # Example usage:
+    blockchain = Blockchain()
+    blockchain.new_transaction('Alice', 'Bob', 1)
+    blockchain.new_transaction('Bob', 'Charlie', 2)
 
-last_block = blockchain.last_block
-last_proof = last_block['proof']
-proof = blockchain.proof_of_work(last_proof)
+    last_block = blockchain.last_block
+    last_proof = last_block['proof']
+    proof = blockchain.proof_of_work(last_proof)
 
-blockchain.new_block(proof)
+    blockchain.new_block(proof)
 
-print("Blockchain:", blockchain.chain)
+    print("Blockchain:", blockchain.chain)
+
+
+if __name__ == "__main__":
+    main()
